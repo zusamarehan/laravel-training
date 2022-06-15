@@ -15,4 +15,29 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
-});
+})->name('welcome');
+
+Route::get('/todo', function() {
+   return view('index');
+})->name('todo');
+
+Route::post('/todo', function() {
+
+    $data = request()->all();
+
+    validator($data, [
+       'task' => ['required'],
+       'date' => ['required']
+    ])->validate();
+
+    \App\Models\Todo::insert([
+       'task' => $data['task'],
+       'date' => $data['date'],
+       'is_completed' => 0
+    ]);
+
+    session()->flash('store', 'Stored Successfully');
+
+    return view('index');
+
+})->name('todo.store');

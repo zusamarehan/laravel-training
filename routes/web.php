@@ -17,27 +17,13 @@ Route::get('/', function () {
     return view('welcome');
 })->name('welcome');
 
-Route::get('/todo', function() {
-   return view('index');
-})->name('todo');
-
-Route::post('/todo', function() {
-
-    $data = request()->all();
-
-    validator($data, [
-       'task' => ['required'],
-       'date' => ['required']
-    ])->validate();
-
-    \App\Models\Todo::insert([
-       'task' => $data['task'],
-       'date' => $data['date'],
-       'is_completed' => 0
-    ]);
-
-    session()->flash('store', 'Stored Successfully');
-
-    return view('index');
-
-})->name('todo.store');
+// To show all Todos
+Route::get('/todos', [\App\Http\Controllers\TodoController::class, 'index'])->name('todo.index');
+// To show Todos Form
+Route::get('/todo/form', [\App\Http\Controllers\TodoController::class, 'form'])->name('todo');
+// To store new Todos
+Route::post('/todos', [\App\Http\Controllers\TodoController::class, 'store'])->name('todo.store');
+// To Mark as Post for Todos
+Route::post('/todos/{id}/is-complete', [\App\Http\Controllers\TodoController::class, 'updateStatus'])->name('todos.update.is.complete');
+// To Delte an Todos
+Route::post('/todos/{id}/destroy', [\App\Http\Controllers\TodoController::class, 'destroy'])->name('todos.delete');
